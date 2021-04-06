@@ -1,0 +1,22 @@
+{
+  "name": "nertivia-api",
+  "version": "1.0.0",
+  "description": "Nertivia API used in the Nertivia client ts.",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node example.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eventemitter3": "^4.0.7",
+    "socket.io-client": "^2.3.0",
+    "socketio-wildcard": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^1.4.36",
+    "@types/socketio-wildcard": "^2.0.3",
+    "ts-node": "^9.1.1"
+  }
+}
