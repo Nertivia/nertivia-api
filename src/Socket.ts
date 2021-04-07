@@ -140,6 +140,6 @@ export class Socket extends EventEmitter {
             type: serverMember.type,
         }
         const map = this.client.servers.mutableMap();
-        map[sanitizedServerMember.server_id].server_members.push(sanitizedServerMember);
+        map[sanitizedServerMember.server_id].server_members[sanitizedServerMember.user_id] = sanitizedServerMember;
     }
 }

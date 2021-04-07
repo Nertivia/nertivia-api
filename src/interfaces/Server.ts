@@ -4,5 +4,9 @@ export interface Server {
     id: string
     name: string
     avatar: string
-    server_members: ServerMember[]
+    server_members: ServerMembers
+}
+
+export interface ServerMembers {
+    [key: string]: ServerMember
 }
