@@ -109,7 +109,7 @@ export class Socket extends EventEmitter {
         const sanitizedServer: Server = {
             id: server.server_id,
             name: server.name,
-            server_members: [],
+            server_members: {},
             avatar: server.avatar || null,
         }
         this.client.servers.add(sanitizedServer.id, sanitizedServer);
