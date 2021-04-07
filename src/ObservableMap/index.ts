@@ -27,6 +27,9 @@ export class ObservableMap<T extends object> extends EventEmitter{
     get(id: string) {
         return this.map[id];
     }
+    mutableMap() {
+        return this.map;
+    }
     add(id: string, object: T) {
         this.map[id] = new Proxy(object, this.proxyHandler)
         this.emit("add", object)
