@@ -8,6 +8,7 @@ import { Server } from './interfaces/Server';
 import { DMChannel } from './interfaces/DMChannel';
 import { ServerChannel } from './interfaces/ServerChannel';
 import { ServerMember } from './interfaces/ServerMember';
+import { ObservableMap } from './ObservableMap';
 
 export interface SocketOptions {
     url: string
@@ -82,11 +83,11 @@ export class Socket extends EventEmitter {
                     }
                     for (let i = 0; i < memberStatusArr.length; i++) {
                         const [id, presence] = memberStatusArr[i];
-                        this.client.users.update(id, {presence: parseInt(presence)})                        
+                        this.client.users.update(this.client.users, id, {presence: parseInt(presence)})                        
                     }
                     for (let i = 0; i < customStatusArr.length; i++) {
                         const [id, custom_status] = customStatusArr[i];
-                        this.client.users.update(id, {custom_status})                        
+                        this.client.users.update(this.client.users, id, {custom_status})                        
                     }
                     this.emit("CLIENT:READY")
                     break;
@@ -133,13 +134,16 @@ export class Socket extends EventEmitter {
         this.client.serverChannels.add(sanitizedServerChannel.id, sanitizedServerChannel);
     }
     private addServerMember (serverMember: any) {
-        const sanitizedServerMember: ServerMember = {
+        const member: ServerMember = {
             server_id: serverMember.server_id,
             user_id: serverMember.member.uniqueID,
             role_ids: serverMember.roles,
             type: serverMember.type,
         }
-        const map = this.client.servers.mutableMap();
-        map[sanitizedServerMember.server_id].server_members[sanitizedServerMember.user_id] = sanitizedServerMember;
+        this.client.servers.update(
+            this.client.servers.get(member.server_id).server_members,
+            member.user_id,
+            member
+        )
     }
 }

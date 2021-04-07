@@ -5,5 +5,6 @@ export interface ServerMember {
     type: ServerMemberType
 }
 export enum ServerMemberType {
-    MEMBER="MEMBER"
+    MEMBER="MEMBER",
+    OWNER="OWNER"
 }

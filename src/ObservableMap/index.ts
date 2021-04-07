@@ -1,4 +1,5 @@
 import EventEmitter from "eventemitter3";
+import { isObjectOrArray } from "./utils";
 
 export declare interface ObservableMap<T>{
     on(event: 'update', listener: (payload: {property: string, value: any}) => void): this;
@@ -34,12 +35,11 @@ export class ObservableMap<T extends object> extends EventEmitter{
         this.map[id] = new Proxy(object, this.proxyHandler)
         this.emit("add", object)
     }
-    update(id: string, object: Partial<T>) {
-        const keys = Object.keys(object)
-        for (let key of keys) {
-            const value = (object as any)[key];
-            (this.map[id] as any)[key] = value;
+    update(object: any, key: string, value: any) {
+        if (isObjectOrArray(value)) {
+            value = new Proxy(value, this.proxyHandler)
         }
+        object[key] = value;
     }
     delete(id: string) {
         delete this.map[id];
