@@ -92,6 +92,12 @@ export class Socket extends EventEmitter {
                     this.emit("CLIENT:READY")
                     break;
                 }
+                case "userStatusChange": {
+                    const {uniqueID, status} = data;
+                    ObservableMap.update(this.client.users.get(uniqueID), "presence", status)
+                    this.emit("USER:STATUS_CHANGE")
+                    break;
+                }
                 default:
                     console.warn("Unhandled Event:", {type, data})
                     break;
@@ -141,7 +147,6 @@ export class Socket extends EventEmitter {
             role_ids: serverMember.roles,
             type: serverMember.type,
         }
-        
         ObservableMap.update(
             this.client.servers.state[member.server_id].server_members,
             member.user_id,
