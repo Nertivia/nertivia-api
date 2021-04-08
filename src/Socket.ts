@@ -83,11 +83,11 @@ export class Socket extends EventEmitter {
                     }
                     for (let i = 0; i < memberStatusArr.length; i++) {
                         const [id, presence] = memberStatusArr[i];
-                        this.client.users.update(this.client.users, id, {presence: parseInt(presence)})                        
+                        ObservableMap.update(this.client.users, id, {presence: parseInt(presence)})                        
                     }
                     for (let i = 0; i < customStatusArr.length; i++) {
                         const [id, custom_status] = customStatusArr[i];
-                        this.client.users.update(this.client.users, id, {custom_status})                        
+                        ObservableMap.update(this.client.users, id, {custom_status})                        
                     }
                     this.emit("CLIENT:READY")
                     break;
@@ -104,7 +104,7 @@ export class Socket extends EventEmitter {
             avatar: user.avatar || null,
             tag: user.tag,
         }
-        this.client.users.add(sanitizedUser.id, sanitizedUser);
+        this.client.users.create(sanitizedUser.id, sanitizedUser);
     }
     private addServer (server: any) {
         const sanitizedServer: Server = {
@@ -113,7 +113,7 @@ export class Socket extends EventEmitter {
             server_members: {},
             avatar: server.avatar || null,
         }
-        this.client.servers.add(sanitizedServer.id, sanitizedServer);
+        this.client.servers.create(sanitizedServer.id, sanitizedServer);
     }
     private addDMChannel (dm: any) {
         const sanitizedDMChannel: DMChannel = {
@@ -121,7 +121,7 @@ export class Socket extends EventEmitter {
             last_messaged: dm.lastMessaged,
             recipient_ids: dm.recipients[0].uniqueID
         }
-        this.client.dmChannels.add(sanitizedDMChannel.id, sanitizedDMChannel);
+        this.client.dmChannels.create(sanitizedDMChannel.id, sanitizedDMChannel);
     }
     private addServerChannel (channel: any) {
         const sanitizedServerChannel: ServerChannel = {
@@ -131,7 +131,7 @@ export class Socket extends EventEmitter {
             server_id: channel.server_id,
             last_seen: channel.lastSeen
         }
-        this.client.serverChannels.add(sanitizedServerChannel.id, sanitizedServerChannel);
+        this.client.serverChannels.create(sanitizedServerChannel.id, sanitizedServerChannel);
     }
     private addServerMember (serverMember: any) {
         const member: ServerMember = {
@@ -140,8 +140,9 @@ export class Socket extends EventEmitter {
             role_ids: serverMember.roles,
             type: serverMember.type,
         }
-        this.client.servers.update(
-            this.client.servers.get(member.server_id).server_members,
+        
+        ObservableMap.update(
+            this.client.servers.state[member.server_id].server_members,
             member.user_id,
             member
         )
