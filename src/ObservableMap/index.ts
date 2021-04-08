@@ -26,5 +26,11 @@ export class ObservableMap<T> {
             (object as any)[key] = value
         }
     }
+    get(id: string) {
+        return this.state[id];
+    }
+    getAll() {
+        return this.state;
+    }
 
 }

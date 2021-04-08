@@ -93,6 +93,7 @@ export class Socket extends EventEmitter {
                     break;
                 }
                 default:
+                    console.warn("Unhandled Event:", {type, data})
                     break;
             }
         })
