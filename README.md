@@ -3,5 +3,5 @@ Nertivia API to be used in the Nertivia client ts
 
 
 # Added Events
-success (success)
+success (success)   
 receiveMessage (MESSAGE:SEND)
