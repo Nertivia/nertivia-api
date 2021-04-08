@@ -26,6 +26,13 @@ export class ObservableMap<T> {
             (object as any)[key] = value
         }
     }
+    static delete(object: Record<string, any>, key: string) {
+        if (Vue) {
+            Vue.delete(object, key)
+        } else {
+            delete (object as any)[key];
+        }
+    }
     get(id: string) {
         return this.state[id];
     }

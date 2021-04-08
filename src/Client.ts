@@ -13,9 +13,9 @@ export class Client {
     constructor() {
         this.socket = new Socket(this)
         this.dmChannels = new DMChannels()
-        this.serverChannels = new ServerChannels()
         this.users = new Users()
         this.servers = new Servers()
+        this.serverChannels = new ServerChannels()
     }
     login(token: string) {
         this.socket.io.once("connect", () => {
