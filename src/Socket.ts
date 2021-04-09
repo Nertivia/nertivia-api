@@ -10,6 +10,12 @@ import { ServerChannel } from './interfaces/ServerChannel';
 import { ServerMember } from './interfaces/ServerMember';
 import { ObservableMap } from './ObservableMap';
 import { ServerRole } from './interfaces/ServerRole';
+import { sanitizeServer } from './sanitizers/sanitizeServer';
+import { sanitizeDMChannel } from './sanitizers/sanitizeDMChannel';
+import { sanitizeServerMember } from './sanitizers/sanitizeServerMember';
+import { sanitizeServerChannel } from './sanitizers/sanitizeServerChannel';
+import { sanitizeServerRole } from './sanitizers/sanitizeServerRole';
+import { sanitizeUser } from './sanitizers/sanitizeUser';
 
 export interface SocketOptions {
     url: string
@@ -136,7 +142,7 @@ export class Socket extends EventEmitter {
                 }
                 case "server:update_server": {
                     const server = this.client.servers.get(data.server_id);
-                    const updatedServer = {...server, ...data};
+                    const updatedServer = {...server, ...sanitizeServer(data)};
                     this.client.servers.state[server.id] = updatedServer;
                     this.emit("SERVER:UPDATE", updatedServer)
                     break
@@ -148,56 +154,27 @@ export class Socket extends EventEmitter {
         })
     }
     private addUser(user: any) {
-        const sanitizedUser: User = {
-            id: user.uniqueID,
-            username: user.username,
-            avatar: user.avatar || null,
-            tag: user.tag,
-        }
+        const sanitizedUser = sanitizeUser(user);
         this.client.users.create(sanitizedUser.id, sanitizedUser);
     }
     private addServer(server: any) {
-        const sanitizedServer: Server = {
-            id: server.server_id,
-            name: server.name,
-            members: {},
-            roles: {},
-            avatar: server.avatar || null,
-            banner: server.banner || null,
-        }
+        const sanitizedServer: Server = sanitizeServer(server) as any;
+        sanitizedServer.members = {}
+        sanitizedServer.roles = {}
         this.client.servers.create(sanitizedServer.id, sanitizedServer);
     }
     private addServerRole(role: any) {
-        const sanitizedServerRole: ServerRole = {
-            id: role.id,
-            name: role.name,
-            default: role.default,
-            hidden: !!role.hideRole,
-            order: role.order,
-            permission_flags: role.permissions,
-            server_id: role.server_id,
-            color: role.color
-        }
+        const sanitizedServerRole = sanitizeServerRole(role);
         const server = this.client.servers.get(sanitizedServerRole.server_id);
         ObservableMap.update(server.roles, sanitizedServerRole.id, sanitizedServerRole);
     }
     private addServerChannel(channel: any) {
-        const sanitizedServerChannel: ServerChannel = {
-            name: channel.name,
-            id: channel.channelID,
-            last_messaged: channel.lastMessaged,
-            server_id: channel.server_id,
-            last_seen: channel.lastSeen
-        }
+        const sanitizedServerChannel = sanitizeServerChannel(channel);
         this.client.serverChannels.create(sanitizedServerChannel.id, sanitizedServerChannel);
     }
     private addServerMember(serverMember: any) {
-        const member: ServerMember = {
-            server_id: serverMember.server_id,
-            user_id: serverMember.member.uniqueID,
-            role_ids: serverMember.roles,
-            type: serverMember.type,
-        }
+        const user_id = serverMember.member.uniqueID
+        const member = sanitizeServerMember({...serverMember, uniqueID: user_id});
         ObservableMap.update(
             this.client.servers.state[member.server_id].members,
             member.user_id,
@@ -205,11 +182,7 @@ export class Socket extends EventEmitter {
         )
     }
     private addDMChannel(dm: any) {
-        const sanitizedDMChannel: DMChannel = {
-            id: dm.channelID,
-            last_messaged: dm.lastMessaged,
-            recipient_ids: dm.recipients[0].uniqueID
-        }
+        const sanitizedDMChannel= sanitizeDMChannel(dm);
         this.client.dmChannels.create(sanitizedDMChannel.id, sanitizedDMChannel);
     }
 
