@@ -112,8 +112,8 @@ export class Socket extends EventEmitter {
                     break;
                 }
                 case "userStatusChange": {
-                    const { uniqueID, status, custom_status, connected } = data;
-                    const user = this.client.users.get(uniqueID)
+                    const { user_id, status, custom_status, connected } = data;
+                    const user = this.client.users.get(user_id)
                     if (!status) {
                         ObservableMap.delete(user, "presence")
                         ObservableMap.delete(user, "custom_status")
@@ -129,8 +129,8 @@ export class Socket extends EventEmitter {
                     break;
                 }
                 case "member:custom_status_change": {
-                    const { uniqueID, custom_status} = data;
-                    const user = this.client.users.get(uniqueID)
+                    const { user_id, custom_status} = data;
+                    const user = this.client.users.get(user_id)
                     if (!user.presence) return;
                     if (!custom_status) {
                         ObservableMap.delete(user, "custom_status");
@@ -173,11 +173,11 @@ export class Socket extends EventEmitter {
         this.client.serverChannels.create(sanitizedServerChannel.id, sanitizedServerChannel);
     }
     private addServerMember(serverMember: any) {
-        const user_id = serverMember.member.uniqueID
-        const member = sanitizeServerMember({...serverMember, uniqueID: user_id});
+        const id = serverMember.member.id
+        const member = sanitizeServerMember({...serverMember, id});
         ObservableMap.update(
             this.client.servers.state[member.server_id].members,
-            member.user_id,
+            member.id,
             member
         )
     }

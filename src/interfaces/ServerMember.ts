@@ -1,6 +1,6 @@
 export interface ServerMember {
     server_id: string
-    user_id: string
+    id: string
     role_ids?: string[]
     type: ServerMemberType
 }
