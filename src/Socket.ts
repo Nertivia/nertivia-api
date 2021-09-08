@@ -24,14 +24,7 @@ export class Socket {
                 avatar: server.avatar,
                 banner: server.banner,
             });
-            
         }
-        console.log(servers)
-        // setTimeout(() => {
-        //     const {state, deleteAllServers} = serverStore();
-        //     deleteAllServers()
-        //     console.log("done")
-        // }, 1000);
     }
     onAuthError(io: SocketIO, reason: string) {
         throw new Error(reason);
